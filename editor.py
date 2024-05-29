@@ -63,7 +63,7 @@ class Editor():
         for tile in self.tiles:
             window.blit(tile[2], (tile[0], tile[1]))
 
-        self.hud.render(window)
+        self.hud.render(window, self.tile_data, self.current_tile)
 
     def update_hud(self, delta_time):
         if self.current_key == "SPACE":

@@ -1,4 +1,5 @@
 from settings import *
+
 class Hud():
     def __init__(self):
         self.status_bar = pygame.image.load("Sprites/StatusBar.png")
@@ -8,8 +9,12 @@ class Hud():
         self.state = "OPEN"
         self.open_y = window_height - 32
         self.closed_y = window_height
+
+        self.current_tile_x, self.current_tile_y = self.x, self.y
         
     def update(self, delta_time):
+        self.current_tile_x, self.current_tile_y = self.x + 8, self.y + 8
+
         if self.state == "OPEN":
             self.handle_open_state(delta_time)
 
@@ -30,5 +35,9 @@ class Hud():
         if self.y >= self.closed_y - self.speed * delta_time:
             self.y = self.closed_y
 
-    def render(self, window):
+    def display_current_tile(self, window, tile_data, current_tile):
+        window.blit(tile_data[current_tile], (self.current_tile_x, self.current_tile_y))
+
+    def render(self, window, tile_data, current_tile):
         window.blit(self.status_bar, (self.x, self.y))
+        self.display_current_tile(window, tile_data, current_tile)
