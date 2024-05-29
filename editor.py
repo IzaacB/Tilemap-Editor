@@ -25,7 +25,9 @@ class Editor():
         self.hud = Hud()
 
     def update(self, window, keys, delta_time):
-        print(self.current_tile)
+        self.hud.current_tile_forward.check_if_pressed(delta_time)
+        self.hud.current_tile_backward.check_if_pressed(delta_time)
+
         if self.current_tile < 0:
             self.current_tile = 0
         if self.current_tile > len(self.tile_data) - 3:
@@ -48,6 +50,12 @@ class Editor():
             self.current_tile += 1
         
         if self.current_key == "1" and self.current_tile > 0:
+            self.current_tile -= 1
+
+        if self.hud.current_tile_forward.is_pressed and self.current_tile < len(self.tile_data ) - 3:
+            self.current_tile += 1
+
+        if self.hud.current_tile_backward.is_pressed and self.current_tile > 0:
             self.current_tile -= 1
 
         if pygame.mouse.get_pressed()[0]:

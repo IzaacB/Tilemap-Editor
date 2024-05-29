@@ -64,3 +64,25 @@ class Anim():
             return(self.sprite_data[self.current_anim[int(np.floor(self.current_frame))]])
         except:
             return(self.sprite_data[0])
+        
+class Button():
+    def __init__(self, sprite):
+        self.x, self.y = 0, 0
+        self.width, self.height = 8, 8
+        self.sprite = sprite
+
+        self.is_pressed = False
+        self.button_timer = 0
+        self.button_timer_max = 10
+
+    def check_if_pressed(self, delta_time):
+        if pygame.mouse.get_pressed()[0]:
+            if pygame.mouse.get_pos()[0] >= self.x and pygame.mouse.get_pos()[0] <= self.x + self.width and pygame.mouse.get_pos()[1] >= self.y and pygame.mouse.get_pos()[1] <= self.y + self.height and self.button_timer <= 0:
+                self.is_pressed = True
+                self.button_timer = self.button_timer_max * delta_time
+                
+        if self.button_timer > 0:
+            self.button_timer -= 1 * delta_time
+
+        if self.button_timer < self.button_timer_max * delta_time - 1 * delta_time:
+            self.is_pressed = False
