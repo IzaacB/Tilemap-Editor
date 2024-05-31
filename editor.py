@@ -5,34 +5,22 @@ from hud import *
 
 class Editor():
     def __init__(self):
-        #Initialize map data:
+        #Initialize map/tile data:
         self.map = tile_map
         self.tile_data = tile_data
-        self.tilemap = Tilemap(self.map, self.tile_data, 0, 0)
-
         self.current_tile = 2
 
-        self.camera = Camera()
-
-        #Input properties:
+        #Keyboard input properties:
         self.current_key = "NULL"
-        self.current_mouse = "NULL"
         self.key_timer = 0
         self.key_timer_max = 10
-        self.mouse_timer = 0
-        self.mouse_timer_max = 1
 
+        #Initialize visual elements:
         self.hud = Hud()
+        self.camera = Camera()
+        self.tilemap = Tilemap(self.map, self.tile_data, 0, 0)
 
-    def update(self, window, keys, delta_time):
-        self.hud.current_tile_forward.check_if_pressed(delta_time)
-        self.hud.current_tile_backward.check_if_pressed(delta_time)
-
-        if self.current_tile < 0:
-            self.current_tile = 0
-        if self.current_tile > len(self.tile_data) - 3:
-            self.current_tile = len(self.tile_data) - 3
-            
+    def update(self, window, keys, delta_time):        
         self.handle_keyboard_input(keys, delta_time)
         if self.current_key == "RIGHT":
             self.add_width()
@@ -52,10 +40,10 @@ class Editor():
         if self.current_key == "1" and self.current_tile > 0:
             self.current_tile -= 1
 
-        if self.hud.current_tile_forward.is_pressed and self.current_tile < len(self.tile_data ) - 3:
+        if self.hud.cur_tile_forward.is_pressed and self.current_tile < len(self.tile_data ) - 3:
             self.current_tile += 1
 
-        if self.hud.current_tile_backward.is_pressed and self.current_tile > 0:
+        if self.hud.cur_tile_backward.is_pressed and self.current_tile > 0:
             self.current_tile -= 1
 
         if pygame.mouse.get_pressed()[0]:
@@ -74,11 +62,11 @@ class Editor():
         self.hud.render(window, self.tile_data, self.current_tile)
 
     def update_hud(self, delta_time):
-        if self.current_key == "SPACE":
+        if self.current_key == "SPACE" or self.hud.menu_trans.is_pressed:
             if self.hud.state == "OPEN":
                 self.hud.state = "CLOSED"
 
-            elif self.hud.state == "CLOSED":
+            elif self.hud.state == "CLOSED"or self.hud.menu_trans.is_pressed:
                 self.hud.state = "OPEN"
         
         self.hud.update(delta_time)

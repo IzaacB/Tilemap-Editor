@@ -73,7 +73,7 @@ class Button():
 
         self.is_pressed = False
         self.button_timer = 0
-        self.button_timer_max = 10
+        self.button_timer_max = 20
 
     def check_if_pressed(self, delta_time):
         if pygame.mouse.get_pressed()[0]:
