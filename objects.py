@@ -72,14 +72,19 @@ class Button():
         self.sprite = sprite
 
         self.is_pressed = False
+        self.is_hovering = False
         self.button_timer = 0
         self.button_timer_max = 20
 
     def check_if_pressed(self, delta_time):
-        if pygame.mouse.get_pressed()[0]:
-            if pygame.mouse.get_pos()[0] >= self.x and pygame.mouse.get_pos()[0] <= self.x + self.width and pygame.mouse.get_pos()[1] >= self.y and pygame.mouse.get_pos()[1] <= self.y + self.height and self.button_timer <= 0:
+        if pygame.mouse.get_pos()[0] >= self.x and pygame.mouse.get_pos()[0] <= self.x + self.width and pygame.mouse.get_pos()[1] >= self.y and pygame.mouse.get_pos()[1] <= self.y + self.height and self.button_timer <= 0:
+            if pygame.mouse.get_pressed()[0]:
                 self.is_pressed = True
                 self.button_timer = self.button_timer_max * delta_time
+
+            self.is_hovering = True
+        else:
+            self.is_hovering = False
                 
         if self.button_timer > 0:
             self.button_timer -= 1 * delta_time

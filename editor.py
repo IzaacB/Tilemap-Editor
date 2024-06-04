@@ -15,13 +15,19 @@ class Editor():
         self.key_timer = 0
         self.key_timer_max = 10
 
+        #Mouse input properties:
+        self.current_mouse = "NULL"
+        self.mouse_timer = 0
+        self.mouse_timer_max = 10
+
         #Initialize visual elements:
         self.hud = Hud()
         self.camera = Camera()
         self.tilemap = Tilemap(self.map, self.tile_data, 0, 0)
 
     def update(self, window, keys, delta_time):        
-        self.handle_keyboard_input(keys, delta_time)
+        self.handle_input(keys, delta_time)
+
         if self.current_key == "RIGHT":
             self.add_width()
 
@@ -46,8 +52,13 @@ class Editor():
         if self.hud.cur_tile_backward.is_pressed and self.current_tile > 0:
             self.current_tile -= 1
 
-        if pygame.mouse.get_pressed()[0]:
-            self.draw_tile()
+        if self.current_mouse == "LEFT":
+            if self.hud.state == "OPEN":
+                if pygame.mouse.get_pos()[1] < self.hud.y + 16 and not self.hud.menu_trans.is_hovering:
+                    self.draw_tile()
+            else:
+                if not self.hud.menu_trans.is_hovering:
+                    self.draw_tile()
 
         self.update_hud(delta_time)
         self.render(window)
@@ -62,19 +73,17 @@ class Editor():
         self.hud.render(window, self.tile_data, self.current_tile)
 
     def update_hud(self, delta_time):
-        if self.current_key == "SPACE" or self.hud.menu_trans.is_pressed:
+        if self.hud.menu_trans.is_pressed:
             if self.hud.state == "OPEN":
                 self.hud.state = "CLOSED"
 
-            elif self.hud.state == "CLOSED"or self.hud.menu_trans.is_pressed:
+            elif self.hud.state == "CLOSED":
                 self.hud.state = "OPEN"
         
         self.hud.update(delta_time)
-
-    def handle_mouse_input(self, delta_time):
-        pass
     
-    def handle_keyboard_input(self, keys, delta_time):
+    def handle_input(self, keys, delta_time):
+        #Get current key pressed and put it on timer:
         if keys[pygame.K_RIGHT] and self.key_timer <= 0:
             self.current_key = "RIGHT"
             self.key_timer = self.key_timer_max * delta_time
@@ -91,23 +100,35 @@ class Editor():
             self.current_key = "UP"
             self.key_timer = self.key_timer_max * delta_time
 
-        if keys[pygame.K_2] and self.key_timer <= 0:
-            self.current_key = "2"
-            self.key_timer = self.key_timer_max * delta_time
+        #Get current mouse button pressed:
+        if pygame.mouse.get_pressed()[0] and self.mouse_timer <= 0:
+            self.current_mouse = "LEFT"
+            self.mouse_timer = self.mouse_timer_max * delta_time
 
-        if keys[pygame.K_1] and self.key_timer <= 0:
-            self.current_key = "1"
-            self.key_timer = self.key_timer_max * delta_time
-
-        if keys[pygame.K_SPACE] and self.key_timer <= 0:
-            self.current_key = "SPACE"
-            self.key_timer = self.key_timer_max * delta_time
-
+        #Run down timer:
         if self.key_timer > 0:
             self.key_timer -= 1 * delta_time
 
         if self.key_timer < self.key_timer_max * delta_time - 1 * delta_time:
             self.current_key = "NULL"
+
+        if self.mouse_timer >0:
+            self.mouse_timer -= 1 * delta_time
+            
+        if self.mouse_timer < self.mouse_timer_max * delta_time - 1 * delta_time:
+            self.current_mouse = "NULL"
+
+    def keybinds(self):
+        #Add width/height:
+        if self.current_key == "RIGHT":
+            self.add_width()
+        elif self.current_key == "LEFT":
+            self.subtract_width()
+
+        if self.current_key == "DOWN":
+            self.add_height()
+        elif self.current_key == "UP":
+            self.subtract_height()
 
     def get_width(self):
         return len(self.map[0])
@@ -134,7 +155,7 @@ class Editor():
             self.map.pop(-1)
 
     def get_pos(self):
-        return (pygame.mouse.get_pos()[0]//16 + 1, pygame.mouse.get_pos()[1]//16 + 1)
+        return ((pygame.mouse.get_pos()[0]//16 + 1) - self.camera.x, (pygame.mouse.get_pos()[1]//16 + 1) - self.camera.y)
     
     def draw_tile(self):
         if self.get_pos()[0] <= self.get_width() and self.get_pos()[1] <= self.get_height():
