@@ -1,4 +1,5 @@
 from settings import *
+from font import *
 
 class Camera():
     def __init__(self):
@@ -74,7 +75,7 @@ class Button():
         self.is_pressed = False
         self.is_hovering = False
         self.button_timer = 0
-        self.button_timer_max = 20
+        self.button_timer_max = 10
 
     def check_if_pressed(self, delta_time):
         if pygame.mouse.get_pos()[0] >= self.x and pygame.mouse.get_pos()[0] <= self.x + self.width and pygame.mouse.get_pos()[1] >= self.y and pygame.mouse.get_pos()[1] <= self.y + self.height and self.button_timer <= 0:
@@ -91,3 +92,15 @@ class Button():
 
         if self.button_timer < self.button_timer_max * delta_time - 1 * delta_time:
             self.is_pressed = False
+
+class Text():
+    def __init__(self):
+        self.text = ""
+        self.font = font
+
+        self.x = 0
+        self.y = 0
+
+    def render(self, window):
+        for i in range(0, len(self.text)):
+            window.blit(self.font[self.text[i]], (self.x + 8 * i, self.y))

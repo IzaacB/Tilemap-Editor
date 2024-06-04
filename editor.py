@@ -18,7 +18,7 @@ class Editor():
         #Mouse input properties:
         self.current_mouse = "NULL"
         self.mouse_timer = 0
-        self.mouse_timer_max = 10
+        self.mouse_timer_max = 5
 
         #Initialize visual elements:
         self.hud = Hud()
@@ -27,39 +27,8 @@ class Editor():
 
     def update(self, window, keys, delta_time):        
         self.handle_input(keys, delta_time)
-
-        if self.current_key == "RIGHT":
-            self.add_width()
-
-        if self.current_key == "DOWN":
-            self.add_height()
-
-        if self.current_key == "LEFT":
-            self.subtract_width()
-
-        if self.current_key == "UP":
-            self.subtract_height()
-
-        if self.current_key == "2" and self.current_tile < len(self.tile_data ) - 3:
-            self.current_tile += 1
-        
-        if self.current_key == "1" and self.current_tile > 0:
-            self.current_tile -= 1
-
-        if self.hud.cur_tile_forward.is_pressed and self.current_tile < len(self.tile_data ) - 3:
-            self.current_tile += 1
-
-        if self.hud.cur_tile_backward.is_pressed and self.current_tile > 0:
-            self.current_tile -= 1
-
-        if self.current_mouse == "LEFT":
-            if self.hud.state == "OPEN":
-                if pygame.mouse.get_pos()[1] < self.hud.y + 16 and not self.hud.menu_trans.is_hovering:
-                    self.draw_tile()
-            else:
-                if not self.hud.menu_trans.is_hovering:
-                    self.draw_tile()
-
+        self.keybinds()
+        self.ui_input()
         self.update_hud(delta_time)
         self.render(window)
 
@@ -80,7 +49,7 @@ class Editor():
             elif self.hud.state == "CLOSED":
                 self.hud.state = "OPEN"
         
-        self.hud.update(delta_time)
+        self.hud.update(delta_time, self.get_width(), self.get_height())
     
     def handle_input(self, keys, delta_time):
         #Get current key pressed and put it on timer:
@@ -130,6 +99,19 @@ class Editor():
         elif self.current_key == "UP":
             self.subtract_height()
 
+    def ui_input(self):
+        if self.current_mouse == "LEFT":
+            if self.hud.state == "OPEN":
+                if pygame.mouse.get_pos()[1] < self.hud.y + 16 and not self.hud.menu_trans.is_hovering:
+                    self.draw_tile()
+            else:
+                if not self.hud.menu_trans.is_hovering:
+                    self.draw_tile()
+        if self.hud.add_width.is_pressed:
+            self.add_width()
+        elif self.hud.subtract_width.is_pressed:
+            self.subtract_width()
+                    
     def get_width(self):
         return len(self.map[0])
     

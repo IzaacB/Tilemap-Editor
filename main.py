@@ -1,6 +1,7 @@
 from settings import *
 from map_data import *
 from editor import *
+from objects import *
 
 window = pygame.display.set_mode((window_width, window_height), pygame.SCALED)#Create a window.
 editor = Editor()

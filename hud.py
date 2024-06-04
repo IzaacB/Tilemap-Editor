@@ -19,16 +19,22 @@ class Hud():
         self.cur_tile_x = 0
         self.cur_tile_y = 0
 
+        self.width = Text()
+        self.height = Text()
+
         #Initialize buttons:
         self.cur_tile_forward = Button(sprites["RIGHTARROW"])
-
         self.cur_tile_backward = Button(sprites["LEFTARROW"])
+
+        self.add_width = Button(sprites["RIGHTARROW"])
+        self.subtract_width = Button(sprites["LEFTARROW"])
 
         self.menu_trans = Button(sprites["NULL"])
         self.menu_trans.width, self.menu_trans.height = 16, 16#Give bigger hitbox.
         
-    def update(self, delta_time):
+    def update(self, delta_time, width, height):
         self.update_buttons(delta_time)
+        self.update_text(width, height)
         self.update_tile_display()
 
         if self.state == "OPEN":
@@ -42,21 +48,31 @@ class Hud():
 
         #Draw hud elements:
         window.blit(tile_data[current_tile], (self.cur_tile_x, self.cur_tile_y))
+        self.width.render(window)
+        self.height.render(window)
 
         #Draw buttons:
         window.blit(self.cur_tile_forward.sprite, (self.cur_tile_forward.x, self.cur_tile_forward.y))
-
         window.blit(self.cur_tile_backward.sprite, (self.cur_tile_backward.x, self.cur_tile_backward.y))
+
+        window.blit(self.add_width.sprite, (self.add_width.x, self.add_width.y))
+        window.blit(self.subtract_width.sprite, (self.subtract_width.x, self.subtract_width.y))
 
         window.blit(self.menu_trans.sprite, (self.menu_trans.x, self.menu_trans.y))
 
     def update_buttons(self, delta_time):
         #Anchor button positions on hud:
-        self.cur_tile_backward.x = self.x + 16
-        self.cur_tile_backward.y = self.y + 48
+        self.cur_tile_backward.x = self.x + 8
+        self.cur_tile_backward.y = self.y + 36
 
-        self.cur_tile_forward.x = self.x + 32
-        self.cur_tile_forward.y = self.y + 48
+        self.cur_tile_forward.x = self.x + 48
+        self.cur_tile_forward.y = self.y + 36
+
+        self.add_width.x = self.x + 120
+        self.add_width.y = self.y + 32
+
+        self.subtract_width.x = self.x + 72
+        self.subtract_width.y = self.y + 32
 
         self.menu_trans.x = self.x + 120
         self.menu_trans.y = self.y
@@ -64,7 +80,18 @@ class Hud():
         #Check for button presses.
         self.cur_tile_backward.check_if_pressed(delta_time)
         self.cur_tile_forward.check_if_pressed(delta_time)
+        self.add_width.check_if_pressed(delta_time)
+        self.subtract_width.check_if_pressed(delta_time)
         self.menu_trans.check_if_pressed(delta_time)
+
+    def update_text(self, width, height):
+        self.width.text = "W:"+str(width)
+        self.height.text = "H:"+str(height)
+        self.width.x = self.x + 80
+        self.width.y = self.y + 32
+
+        self.height.x = self.x + 80
+        self.height.y = self.y + 40
 
     def update_tile_display(self):
         #Anchor tile display to hud:
