@@ -29,6 +29,9 @@ class Hud():
         self.add_width = Button(sprites["RIGHTARROW"])
         self.subtract_width = Button(sprites["LEFTARROW"])
 
+        self.add_height = Button(sprites["RIGHTARROW"])
+        self.subtract_height = Button(sprites["LEFTARROW"])
+
         self.menu_trans = Button(sprites["NULL"])
         self.menu_trans.width, self.menu_trans.height = 16, 16#Give bigger hitbox.
         
@@ -58,6 +61,9 @@ class Hud():
         window.blit(self.add_width.sprite, (self.add_width.x, self.add_width.y))
         window.blit(self.subtract_width.sprite, (self.subtract_width.x, self.subtract_width.y))
 
+        window.blit(self.add_height.sprite, (self.add_height.x, self.add_height.y))
+        window.blit(self.subtract_height.sprite, (self.subtract_height.x, self.subtract_height.y))
+
         window.blit(self.menu_trans.sprite, (self.menu_trans.x, self.menu_trans.y))
 
     def update_buttons(self, delta_time):
@@ -74,6 +80,12 @@ class Hud():
         self.subtract_width.x = self.x + 72
         self.subtract_width.y = self.y + 32
 
+        self.add_height.x = self.x + 120
+        self.add_height.y = self.y + 40
+
+        self.subtract_height.x = self.x + 72
+        self.subtract_height.y = self.y + 40
+
         self.menu_trans.x = self.x + 120
         self.menu_trans.y = self.y
 
@@ -82,6 +94,8 @@ class Hud():
         self.cur_tile_forward.check_if_pressed(delta_time)
         self.add_width.check_if_pressed(delta_time)
         self.subtract_width.check_if_pressed(delta_time)
+        self.add_height.check_if_pressed(delta_time)
+        self.subtract_height.check_if_pressed(delta_time)
         self.menu_trans.check_if_pressed(delta_time)
 
     def update_text(self, width, height):

@@ -26,7 +26,7 @@ class Editor():
         self.tilemap = Tilemap(self.map, self.tile_data, 0, 0)
 
     def update(self, window, keys, delta_time):        
-        self.handle_input(keys, delta_time)
+        self.handle_raw_input(keys, delta_time)
         self.keybinds()
         self.ui_input()
         self.update_hud(delta_time)
@@ -51,7 +51,7 @@ class Editor():
         
         self.hud.update(delta_time, self.get_width(), self.get_height())
     
-    def handle_input(self, keys, delta_time):
+    def handle_raw_input(self, keys, delta_time):
         #Get current key pressed and put it on timer:
         if keys[pygame.K_RIGHT] and self.key_timer <= 0:
             self.current_key = "RIGHT"
@@ -111,6 +111,16 @@ class Editor():
             self.add_width()
         elif self.hud.subtract_width.is_pressed:
             self.subtract_width()
+
+        if self.hud.cur_tile_forward.is_pressed:
+            self.current_tile += 1
+        elif self.hud.cur_tile_backward.is_pressed:
+            self.current_tile -= 1
+
+        if self.hud.add_height.is_pressed:
+            self.add_height()
+        elif self.hud.subtract_height.is_pressed:
+            self.subtract_height()
                     
     def get_width(self):
         return len(self.map[0])
