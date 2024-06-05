@@ -17,12 +17,12 @@ while running:
             running = False
 
     keys = pygame.key.get_pressed()
-    print(pygame.mouse.get_pos()[0]//16 + 1, pygame.mouse.get_pos()[1]//16 + 1)
+    print(editor.get_pos()[0], editor.get_pos()[1])
     #print(pygame.mouse.get_pressed())#
             
     #Render:
     window.fill(BLACK)#Clear screen.
-    
+
     #PUT IN RENDER CODE HERE.
     editor.update(window, keys, delta_time)
     

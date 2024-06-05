@@ -11,7 +11,7 @@ class Hud():
         self.trans_speed = 300
 
         #Initialize menu state and associated properties:
-        self.state = "CLOSED"
+        self.state = "OPEN"
         self.open_y = window_height - 64
         self.closed_y = window_height - 16
 
@@ -34,6 +34,11 @@ class Hud():
 
         self.menu_trans = Button(sprites["NULL"])
         self.menu_trans.width, self.menu_trans.height = 16, 16#Give bigger hitbox.
+
+        self.cam_up = Button(sprites["UPARROW"])
+        self.cam_down = Button(sprites["DOWNARROW"])
+        self.cam_right = Button(sprites["RIGHTARROW"])
+        self.cam_left = Button(sprites["LEFTARROW"])
         
     def update(self, delta_time, width, height):
         self.update_buttons(delta_time)
@@ -64,6 +69,12 @@ class Hud():
         window.blit(self.add_height.sprite, (self.add_height.x, self.add_height.y))
         window.blit(self.subtract_height.sprite, (self.subtract_height.x, self.subtract_height.y))
 
+        window.blit(sprites["CAMERA"], (self.x + 152, self.y + 32))
+        window.blit(self.cam_up.sprite, (self.cam_up.x, self.cam_up.y))
+        window.blit(self.cam_down.sprite, (self.cam_down.x, self.cam_down.y))
+        window.blit(self.cam_right.sprite, (self.cam_right.x, self.cam_right.y))
+        window.blit(self.cam_left.sprite, (self.cam_left.x, self.cam_left.y))
+
         window.blit(self.menu_trans.sprite, (self.menu_trans.x, self.menu_trans.y))
 
     def update_buttons(self, delta_time):
@@ -89,6 +100,18 @@ class Hud():
         self.menu_trans.x = self.x + 120
         self.menu_trans.y = self.y
 
+        self.cam_up.x = self.x + 156
+        self.cam_up.y = self.y + 24
+
+        self.cam_down.x = self.x + 156
+        self.cam_down.y = self.y + 48
+
+        self.cam_right.x = self.x + 170
+        self.cam_right.y = self.y + 36
+
+        self.cam_left.x = self.x + 143
+        self.cam_left.y = self.y + 36
+
         #Check for button presses.
         self.cur_tile_backward.check_if_pressed(delta_time)
         self.cur_tile_forward.check_if_pressed(delta_time)
@@ -97,6 +120,10 @@ class Hud():
         self.add_height.check_if_pressed(delta_time)
         self.subtract_height.check_if_pressed(delta_time)
         self.menu_trans.check_if_pressed(delta_time)
+        self.cam_up.check_if_pressed(delta_time)
+        self.cam_down.check_if_pressed(delta_time)
+        self.cam_right.check_if_pressed(delta_time)
+        self.cam_left.check_if_pressed(delta_time)
 
     def update_text(self, width, height):
         self.width.text = "W:"+str(width)

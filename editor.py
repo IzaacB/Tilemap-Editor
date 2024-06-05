@@ -38,6 +38,8 @@ class Editor():
 
         for tile in self.tiles:
             window.blit(tile[2], (tile[0], tile[1]))
+            
+        window.blit(self.tile_data[self.current_tile], ((pygame.mouse.get_pos()[0]//16) * 16, (pygame.mouse.get_pos()[1]//16) * 16))
 
         self.hud.render(window, self.tile_data, self.current_tile)
 
@@ -69,9 +71,37 @@ class Editor():
             self.current_key = "UP"
             self.key_timer = self.key_timer_max * delta_time
 
+        if keys[pygame.K_w] and self.key_timer <= 0:
+            self.current_key = "W"
+            self.key_timer = self.key_timer_max * delta_time
+
+        if keys[pygame.K_s] and self.key_timer <= 0:
+            self.current_key = "S"
+            self.key_timer = self.key_timer_max * delta_time
+
+        if keys[pygame.K_a] and self.key_timer <= 0:
+            self.current_key = "A"
+            self.key_timer = self.key_timer_max * delta_time
+
+        if keys[pygame.K_d] and self.key_timer <= 0:
+            self.current_key = "D"
+            self.key_timer = self.key_timer_max * delta_time
+
+        if keys[pygame.K_q] and self.key_timer <= 0:
+            self.current_key = "Q"
+            self.key_timer = self.key_timer_max * delta_time
+
+        if keys[pygame.K_e] and self.key_timer <= 0:
+            self.current_key = "E"
+            self.key_timer = self.key_timer_max * delta_time
+
         #Get current mouse button pressed:
         if pygame.mouse.get_pressed()[0] and self.mouse_timer <= 0:
             self.current_mouse = "LEFT"
+            self.mouse_timer = self.mouse_timer_max * delta_time
+
+        if pygame.mouse.get_pressed()[2] and self.mouse_timer <= 0:
+            self.current_mouse = "RIGHT"
             self.mouse_timer = self.mouse_timer_max * delta_time
 
         #Run down timer:
@@ -99,6 +129,21 @@ class Editor():
         elif self.current_key == "UP":
             self.subtract_height()
 
+        if self.current_key == "W":
+            self.camera.y -= 16
+        elif self.current_key == "S":
+            self.camera.y += 16
+
+        if self.current_key == "D":
+            self.camera.x += 16
+        elif self.current_key == "A":
+            self.camera.x -= 16
+
+        if self.current_key == "Q" and self.current_tile >= 2:
+            self.current_tile -= 1
+        if self.current_key == "E" and self.current_tile < len(self.tile_data) - 3:
+            self.current_tile += 1
+
     def ui_input(self):
         if self.current_mouse == "LEFT":
             if self.hud.state == "OPEN":
@@ -107,6 +152,15 @@ class Editor():
             else:
                 if not self.hud.menu_trans.is_hovering:
                     self.draw_tile()
+
+        if self.current_mouse == "RIGHT":
+            if self.hud.state == "OPEN":
+                if pygame.mouse.get_pos()[1] < self.hud.y + 16 and not self.hud.menu_trans.is_hovering:
+                    self.erase_tile()
+            else:
+                if not self.hud.menu_trans.is_hovering:
+                    self.erase_tile()
+
         if self.hud.add_width.is_pressed:
             self.add_width()
         elif self.hud.subtract_width.is_pressed:
@@ -121,6 +175,16 @@ class Editor():
             self.add_height()
         elif self.hud.subtract_height.is_pressed:
             self.subtract_height()
+
+        if self.hud.cam_up.is_pressed:
+            self.camera.y -= 16
+        elif self.hud.cam_down.is_pressed:
+            self.camera.y += 16
+
+        if self.hud.cam_right.is_pressed:
+            self.camera.x += 16
+        elif self.hud.cam_left.is_pressed:
+            self.camera.x -= 16
                     
     def get_width(self):
         return len(self.map[0])
@@ -147,8 +211,12 @@ class Editor():
             self.map.pop(-1)
 
     def get_pos(self):
-        return ((pygame.mouse.get_pos()[0]//16 + 1) - self.camera.x, (pygame.mouse.get_pos()[1]//16 + 1) - self.camera.y)
+        return ((pygame.mouse.get_pos()[0]//16 + 1) + self.camera.x//16, (pygame.mouse.get_pos()[1]//16 + 1) + self.camera.y//16)
     
     def draw_tile(self):
-        if self.get_pos()[0] <= self.get_width() and self.get_pos()[1] <= self.get_height():
+        if self.get_pos()[0] <= self.get_width() and self.get_pos()[1] <= self.get_height() and self.get_pos()[0] > 0 and self.get_pos()[1] > 0:
             self.map[self.get_pos()[1] - 1][self.get_pos()[0] - 1] = self.current_tile
+
+    def erase_tile(self):
+        if self.get_pos()[0] <= self.get_width() and self.get_pos()[1] <= self.get_height() and self.get_pos()[0] > 0 and self.get_pos()[1] > 0:
+            self.map[self.get_pos()[1] - 1][self.get_pos()[0] - 1] = 0
