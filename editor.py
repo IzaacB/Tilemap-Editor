@@ -166,9 +166,9 @@ class Editor():
         elif self.hud.subtract_width.is_pressed:
             self.subtract_width()
 
-        if self.hud.cur_tile_forward.is_pressed:
+        if self.hud.cur_tile_forward.is_pressed and self.current_tile < len(self.tile_data) - 3:
             self.current_tile += 1
-        elif self.hud.cur_tile_backward.is_pressed:
+        elif self.hud.cur_tile_backward.is_pressed and self.current_tile >= 2:
             self.current_tile -= 1
 
         if self.hud.add_height.is_pressed:
